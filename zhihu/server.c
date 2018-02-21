@@ -1,61 +1,53 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <netinet/in.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <strings.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <string.h>
 
-#define oops(msg, n) do{ perror(msg); exit(n);} while(0)
+#define MAXLINE 80
+#define SERV_PORT 8000
 
-int main(int argc, char *argv[])
+int main()
 {
-	int sock_id, sock_fd;
-	struct sockaddr_in saddr;
-	FILE *sock_fpi, *sock_fpo;
-	char buf[BUFSIZ];
-	const char *str_ret = "world";
+    char buf[MAXLINE];
+    int listenfd = 0;
 
-	if((sock_id = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-		oops("socket", 1);	
+    listenfd = socket(AF_INET, SOCK_STREAM, 0);
 
-	bzero(&saddr, sizeof(saddr));
-	saddr.sin_family = AF_INET;
-	saddr.sin_port = htons(43210);
-	saddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	if(bind(sock_id, (struct sockaddr *)&saddr, sizeof(saddr)) == -1)
-		oops("bind", 2);
+    struct sockaddr_in servaddr = {0};
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_port = htons(SERV_PORT);
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-	if(listen(sock_id, 1) == -1)
-		oops("listen", 3);
+    bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
+    listen(listenfd, 20);
 
-	while(1)
-	{
-		sock_fd = accept(sock_id, NULL, NULL);	
-		if(sock_fd == -1)
-			oops("accept", 3);
-		printf("Wow!Got a call!\n");
+    printf("Accepting connections ...\n");
+    while(1) {
+        struct sockaddr_in cliaddr = {0};
+        socklen_t cliaddr_len = sizeof(cliaddr);
+        int connfd = accept(listenfd, (struct sockaddr *)&cliaddr, &cliaddr_len);
 
-		sock_fpi = fdopen(sock_fd, "r");
-		if(sock_fpi == NULL)
-			oops("fdopen in", 4);
-		sock_fpo = fdopen(sock_fd, "w");
-		if(sock_fpo == NULL)
-			oops("fdopen out", 5);
+        char str[INET_ADDRSTRLEN];
+        printf("connect from %s at PORT %d\n",
+               inet_ntop(AF_INET, &cliaddr.sin_addr, str, sizeof(str)),
+               ntohs(cliaddr.sin_port));
+        while(1) {
+            int count = read(connfd, buf, MAXLINE);
+            if(count == 0)
+                break;
 
-		if(fgets(buf, BUFSIZ-5, sock_fpi) == NULL)
-			oops("reading", 5);
-		printf("%s", buf);
-
-//		if(fputs("World", sock_fpo) == EOF)
-//			oops("writing", 6);
-		if(write(sock_fd, str_ret, strlen(str_ret)) < 0)
-			oops("writing", 6);
-		
-		fclose(sock_fpi);
-		fclose(sock_fpo);
-		close(sock_fd);
-	}
-
-	return 0;
+            if(!strcmp(buf, "Hello")) {
+                printf("client send %s\n", buf);
+                write(connfd, "World", 6);
+            }
+        }
+        close(connfd);
+        printf("closed from %s at PORT %d\n",
+                inet_ntop(AF_INET, &cliaddr.sin_addr, str, sizeof(str)),
+                ntohs(cliaddr.sin_port));
+    }
+    return 0;
 }
