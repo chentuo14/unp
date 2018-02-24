@@ -78,7 +78,7 @@ int main(void)
 	printf("Accepting connecting ... \n");
 
 	for( ; ; ) {
-		nfds = epoll_wait(epfd, events, MAX_EVENT, -1);
+		nfds = epoll_wait(epfd, events, MAX_EVENT, 500);
 		if(nfds == -1) {
 			perror("epoll_wait");
 			exit(EXIT_FAILURE);
@@ -130,7 +130,6 @@ int main(void)
 				ev.data.fd = sockfd;
 				ev.events = EPOLLIN | EPOLLET;
 				epoll_ctl(epfd, EPOLL_CTL_MOD, sockfd, &ev);
-			} else {
 				//TODO:else
 			}
 		}

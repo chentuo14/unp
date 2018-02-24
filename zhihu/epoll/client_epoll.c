@@ -26,11 +26,13 @@ int main(int argc, char *argv[])
                 return 1;
         }
 
-        write(sockfd, MESSAGE, sizeof(MESSAGE));
-        int count = read(sockfd, buf, MAXLINE);
+		for( ; ;) {
+        	write(sockfd, MESSAGE, sizeof(MESSAGE));
+      		int count = read(sockfd, buf, MAXLINE);
 
-        printf("Response from server: %s\n", buf);
-
+        	printf("Response from server: %s\n", buf);
+			sleep(1);
+		}
         close(sockfd);
         return 0;
 }
