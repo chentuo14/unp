@@ -1,0 +1,27 @@
+#ifndef _3PROCESS_FD_H_
+#define _3PROCESS_FD_H_
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <iostream>
+
+using namespace std;
+
+#include <sys/socket.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <fcntl.h>
+#include <sys/uio.h>
+#include <sys/epoll.h>
+#include "3process_fun.h"
+
+typedef struct {
+	int index;
+	int chanel[2];
+}process_t;
+
+#define MAXPROCESS 3
+#define MAXLINE 100
+
+#endif
