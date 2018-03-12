@@ -1,0 +1,28 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CPC_H	./socketpair2.h	10;"	d
+DEBUG	./socketpair2.h	12;"	d
+FD_TRANS	./socketpair2.h	/^enum message_type{FD_TRANS = 0, MSG_TRANS};$/;"	e	enum:message_type
+MAX_EVENT	./socketpair2.h	13;"	d
+MSG_TRANS	./socketpair2.h	/^enum message_type{FD_TRANS = 0, MSG_TRANS};$/;"	e	enum:message_type
+channel	./socketpair2.h	/^	int channel[2];$/;"	m	struct:__anon1
+content_t	./socketpair2.h	/^}content_t;$/;"	t	typeref:struct:__anon3
+data	./socketpair2.h	/^	content_t data;$/;"	m	struct:__anon4
+fd	./socketpair2.h	/^	int fd;				\/\/传递描述符用这个$/;"	m	struct:__anon3
+index	./socketpair2.h	/^	int index;$/;"	m	struct:__anon1
+info	./socketpair2.h	/^	info_t info;$/;"	m	struct:__anon4
+info_t	./socketpair2.h	/^}info_t;$/;"	t	typeref:struct:__anon2
+main	./soketpair.c	/^int main() {$/;"	f
+message_t	./socketpair2.h	/^}message_t;$/;"	t	typeref:struct:__anon4
+message_type	./socketpair2.h	/^enum message_type{FD_TRANS = 0, MSG_TRANS};$/;"	g
+pid	./socketpair2.h	/^	pid_t pid;$/;"	m	struct:__anon1
+process_t	./socketpair2.h	/^}process_t;$/;"	t	typeref:struct:__anon1
+sourceIndex	./socketpair2.h	/^	int sourceIndex;$/;"	m	struct:__anon2
+str	./socketpair2.h	/^	char str[64];		\/\/传递字符串用这个$/;"	m	struct:__anon3
+str_cli	./strclinonb.c	/^str_cli(FILE *fp, int sockfd)$/;"	f
+type	./socketpair2.h	/^	enum message_type type;	\/\/消息来自那个进程$/;"	m	struct:__anon2	typeref:enum:__anon2::message_type
+write_channel_fd	./socketpair2.c	/^int write_channel_fd(int fd, message_t *data)$/;"	f
