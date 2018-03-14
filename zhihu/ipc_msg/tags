@@ -1,0 +1,24 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CLIENT_TYPE	common.h	17;"	d
+CommonMessageQueue	common.c	/^static int CommonMessageQueue(int flags)$/;"	f	file:
+CreateMessageQueue	common.c	/^int CreateMessageQueue()$/;"	f
+DeleteMessageQueue	common.c	/^int DeleteMessageQueue(int msg_id)$/;"	f
+FILEPATH	common.h	14;"	d
+GetMessageQueue	common.c	/^int GetMessageQueue()$/;"	f
+ID	common.h	15;"	d
+MSG_SIZE	common.h	13;"	d
+ReceiveDataFromMessageQueue	common.c	/^int ReceiveDataFromMessageQueue(int msg_id, int receive_type, char *out)$/;"	f
+SERVER_TYPE	common.h	16;"	d
+SendDataToMessageQueue	common.c	/^int SendDataToMessageQueue(int msg_id, int send_type, char *msg)$/;"	f
+__COMMON_H_	common.h	2;"	d
+main	client.c	/^int main()$/;"	f
+main	server.c	/^int main()$/;"	f
+msg_info	common.h	/^typedef struct msg_info {$/;"	s
+msginfo	common.h	/^}msginfo;$/;"	t	typeref:struct:msg_info
+mtext	common.h	/^	char mtext[MSG_SIZE];$/;"	m	struct:msg_info
+mtype	common.h	/^	long mtype;$/;"	m	struct:msg_info

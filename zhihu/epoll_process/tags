@@ -1,0 +1,38 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+EPOLL_DATA_S	server.c	/^typedef struct EPOLL_DATA_S {$/;"	s	file:
+EVENT_LIST_MAX	server.c	17;"	d	file:
+EVENT_MAX	server.c	18;"	d	file:
+Epoll_Data_S	server.c	/^} Epoll_Data_S;$/;"	t	typeref:struct:EPOLL_DATA_S	file:
+MAXLINE	client.c	/^const int MAXLINE = 5;$/;"	v
+PFCALLBACL	server.c	/^typedef int (*PFCALLBACL)(struct epoll_event *);$/;"	t	file:
+SERVER_PORT	server.c	20;"	d	file:
+WORKER_MAX	server.c	16;"	d	file:
+WORK_REAL	server.c	19;"	d	file:
+add_event_epoll	server.c	/^static void add_event_epoll(int iEpoll_Fd, int iEvent_Fd, PFCALLBACL pfCallBack)$/;"	f	file:
+count	client.c	/^int count = 1;$/;"	v
+create_epoll	server.c	/^static int create_epoll(unsigned int event_num)$/;"	f	file:
+create_workers	server.c	/^static int create_workers(unsigned int worker_num)$/;"	f	file:
+cur_pid	server.c	/^static int cur_pid;$/;"	v	file:
+del_event_epoll	server.c	/^static void del_event_epoll(int iEpoll_Fd, int iEvent_Fd)$/;"	f	file:
+handleterm	server.c	/^static void handleterm(int sig)$/;"	f	file:
+iEpoll_Fd	server.c	/^	int iEpoll_Fd;$/;"	m	struct:EPOLL_DATA_S	file:
+iEvent_Fd	server.c	/^	int iEvent_Fd;$/;"	m	struct:EPOLL_DATA_S	file:
+icEpollFd	server.c	/^static int icEpollFd = -1;$/;"	v	file:
+initMutex	server.c	/^static void initMutex(void)$/;"	f	file:
+main	client.c	/^int main(void)$/;"	f
+main	server.c	/^int main()$/;"	f
+make_socket_non_blocking	client.c	/^static int make_socket_non_blocking(int fd)$/;"	f	file:
+make_socket_non_blocking	server.c	/^static int make_socket_non_blocking(int fd)$/;"	f	file:
+mutex	server.c	/^static pthread_mutex_t *mutex;$/;"	v	file:
+pfCallBack	server.c	/^	PFCALLBACL pfCallBack;$/;"	m	struct:EPOLL_DATA_S	file:
+proc_accept	server.c	/^static int proc_accept(struct epoll_event *pstEvent)$/;"	f	file:
+proc_epoll	server.c	/^static void proc_epoll(int iEpollFd, int timeout)$/;"	f	file:
+proc_receive	server.c	/^static int proc_receive(struct epoll_event *pstEvent)$/;"	f	file:
+sockconn	client.c	/^void sockconn()$/;"	f
+startup	server.c	/^static int startup(unsigned short port)$/;"	f	file:
+workers	server.c	/^static int workers[WORKER_MAX];$/;"	v	file:

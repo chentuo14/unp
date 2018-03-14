@@ -10,7 +10,7 @@
 #define SERV_PORT 9876
 #define MESSAGE "Hello"
 
-int main(int argc, char *argv[])
+int sockconn(void)
 {
 	char buf[MAXLINE];
 
@@ -29,12 +29,28 @@ int main(int argc, char *argv[])
 	while(1)
 	{
 		write(sockfd, MESSAGE, sizeof(MESSAGE));
-//		int count = read(sockfd, buf, MAXLINE);
+		int count = read(sockfd, buf, MAXLINE);
 
-//		printf("Response from server: %s\n", buf);
-		sleep(6);
+		printf("Response from server: %s\n", buf);
+		sleep(1);
+	}
+	close(sockfd);
+	return 0;
+}
+
+int main(int argc, char *argv[])
+{
+	int i;
+	pid_t pid;
+	for(i=0;i<2000;i++) {
+		pid = fork();
+		if(pid < 0) {
+			perror("fork");
+			return -1;
+		} else if(pid == 0) {
+			sockconn();
+		}
 	}
 
-	close(sockfd);
 	return 0;
 }

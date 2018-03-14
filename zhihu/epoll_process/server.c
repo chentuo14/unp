@@ -136,7 +136,7 @@ static int create_epoll(unsigned int event_num)
 	return epoll_fd;
 }
 
-static void add_event_epoll(int iEpoll_Fd, int iEpvent_Fd, PFCALLBACL pfCallBack)
+static void add_event_epoll(int iEpoll_Fd, int iEvent_Fd, PFCALLBACL pfCallBack)
 {
 	int op = EPOLL_CTL_ADD;
 	struct epoll_event ee;
@@ -152,7 +152,7 @@ static void add_event_epoll(int iEpoll_Fd, int iEpvent_Fd, PFCALLBACL pfCallBack
 	data->pfCallBack = pfCallBack;
 
 	ee.events = EPOLLIN | EPOLLOUT | EPOLLHUP;
-	ee.data.ptr = (void void*)data;
+	ee.data.ptr = (void*)data;
 
 	if(epoll_ctl(iEpoll_Fd, op, iEvent_Fd, &ee) == -1) {
 		printf("epoll_ctl(%d, %d) failed", op, iEvent_Fd);

@@ -8,4 +8,4 @@ myclient:myclient.c
 	g++ -o $@ $^
 
 clean:
-	rm -rf server client myserver myclient
+	rm -f server client myclient
