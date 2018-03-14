@@ -29,6 +29,7 @@ typedef struct {
 
 #define MAXPROCESS 3
 #define MAXLINE 100
+#define LISTENQ 100
 
 #define SERV_PORT  9876
 

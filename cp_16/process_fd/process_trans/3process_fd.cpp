@@ -21,7 +21,7 @@ void child_process(int index, process_t *processes)
 	cout<<"child "<<index<<" pid: "<<getpid()<<endl;
 	struct epoll_event ev, events[20];
 	int epfd, nfds, sockfd, listenfd, connfd;
-	int i, n;
+	int i, j, n;
 	char buf[MAXLINE], line[MAXLINE];
 	struct sockaddr_in servaddr;
 	struct sockaddr_in clientaddr;
@@ -35,7 +35,7 @@ void child_process(int index, process_t *processes)
 	servaddr.sin_port = htons(SERV_PORT);
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
-	listen(listenfd, 20);
+	listen(listenfd, LISTENQ);
 
 	/* create epoll	*/
 	epfd = epoll_create(256);
@@ -62,9 +62,6 @@ void child_process(int index, process_t *processes)
 				ev.data.fd = connfd;
 				ev.events = EPOLLIN | EPOLLET;
 				epoll_ctl(epfd, EPOLL_CTL_ADD, connfd, &ev);
-			} else if(events[i].data.fd == (processes+index)->chanel[1]) {
-				read((processes+index)->chanel[1], buf, sizeof(buf));
-				cout<<"child "<<index<<" recv: "<<buf<<endl;
 			} else if(events[i].events & EPOLLIN) {
 				if((sockfd = events[i].data.fd) < 0) {
 					ev.data.fd = sockfd;
@@ -72,29 +69,41 @@ void child_process(int index, process_t *processes)
 					epoll_ctl(epfd, EPOLL_CTL_DEL, sockfd, &ev);
 					continue;
 				}
-				if((n = read(sockfd, line, MAXLINE)) < 0) {
-					if(errno == ECONNRESET) {
-						close(sockfd);
-						events[i].data.fd = -1;
-						ev.data.fd = sockfd;
-						ev.events = EPOLLIN | EPOLLET;
-						epoll_ctl(epfd, EPOLL_CTL_DEL, sockfd, &ev);
+				if(sockfd != connfd) {		/* socketpair */
+					if((n = read(sockfd, buf, MAXLINE)) <0 ) {
+						printf("[child%d] socketpair read error\n", index);
+						continue;
+					} else if(n == 0) {
+						printf("[child%d] socketpair read nothing\n", index);
+						continue;
 					} else {
-						cout<<"readline error"<<endl;
+						printf("[child%d] recv : %s\n", index, buf);
 					}
-				} else if(n == 0) {
-					close(sockfd);
-					events[i].data.fd = -1;
+					continue;
+				}
+
+				cout<<"[child"<<index<<"] here is a EPOLLIN event."<<endl;
+				if((n = read(sockfd, buf, MAXLINE)) < 0) {	/* socket */
+					cout<<"[child"<<index<<"] read error"<<endl;
 					ev.data.fd = sockfd;
 					ev.events = EPOLLIN | EPOLLET;
 					epoll_ctl(epfd, EPOLL_CTL_DEL, sockfd, &ev);
-					cout<<"[child"<<index<<"] close socket?"<<endl;
 					continue;
+				} else if(n == 0) {
+					cout<<"[child"<<index<<"] read nothing"<<endl;
+					ev.data.fd = sockfd;
+					ev.events = EPOLLIN | EPOLLET;
+					epoll_ctl(epfd, EPOLL_CTL_DEL, sockfd, &ev);
+					continue;
+				} else {
+					printf("[child%d] recv : %s\n", index, buf);
+					for(j=0;j<MAXPROCESS;j++) {
+						if(j != index) {
+							sprintf(line, "%s(from [child%d])\n", buf, index);
+							write((processes+j)->chanel[0], line, strlen(line));
+						}
+					}
 				}
-				cout<<"[child"<<index<<"] here is a EPOLLIN event."<<endl;
-				ev.data.fd = sockfd;
-				ev.events = EPOLLOUT | EPOLLET;
-				epoll_ctl(epfd, EPOLL_CTL_MOD, sockfd, &ev);
 			} else if(events[i].events & EPOLLOUT) {
 				if((sockfd = events[i].data.fd) < 0) {
 					ev.data.fd = sockfd;
@@ -102,14 +111,7 @@ void child_process(int index, process_t *processes)
 					epoll_ctl(epfd, EPOLL_CTL_DEL, sockfd, &ev);
 					continue;
 				}
-				if(!strcmp(line, "Hello")) {
-					strcpy(buf, "World");
-					write(sockfd, buf, strlen(buf));
-				}
 				cout<<"[child"<<index<<"] here is a EPOLLOUT event."<<endl;
-				ev.data.fd = sockfd;
-				ev.events = EPOLLIN | EPOLLET;
-				epoll_ctl(epfd, EPOLL_CTL_MOD, sockfd, &ev);
 			}
 		}
 	}
@@ -146,6 +148,7 @@ int main(int argc, char *argv[])
 				break;
 		}
 	}
+	sleep(1);
 
 	for(i=0;i<MAXPROCESS;i++) {
 		write((pprocess+i)->chanel[0], "Hello child", strlen("Hello child"));
