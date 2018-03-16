@@ -1,6 +1,6 @@
 all:serverDemo
 
-serverDemo:serverDemo.cpp
+serverDemo:serverDemo.cpp epoll_fun.cpp
 	g++ -o $@ $^
 
 clean:

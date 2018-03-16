@@ -32,9 +32,10 @@ struct NetDataSchool_t {
 	char szSchoolAddress[30];
 };
 
+/* 处理整理好的对象 */
 bool HandleNetPack(NetDataHeader_t *pDataHeader);
 
-bool TcpDataSplit(const char *szRecvNetData, int nRecSize)
+bool TcpDataSplit(const char *szRecNetData, int nRecSize)
 {
 	static char szLastSaveData[MAX_NETPACK_SIZE];
 	static int  nRemainSize = 0;
@@ -53,11 +54,13 @@ bool TcpDataSplit(const char *szRecvNetData, int nRecSize)
 	NetDataHeader_t *pDataHead = (NetDataHeader_t *)szLastSaveData;
 
 	/* 核心算法 */
-	while(nRemainSize > sizeof(NetDataHeader_t) &&
-			nRemainSize >= pDataHead->nDataSize + sizeof(NetDataHeader_t)) {
+	while(nRemainSize > sizeof(NetDataHeader_t) && /* 合并的大小大于头结构 */
+			nRemainSize >= pDataHead->nDataSize + sizeof(NetDataHeader_t)) {  /* 合并大小大于头结构的大小值加上头结构 */ 
 		HandleNetPack(pDataHead);
+		//本次收到的对象大小
 		int nRecObjectSize = sizeof(NetDataHeader_t)+pDataHead->nDataSize;
 		nRemainSize -= nRecObjectSize;
+		//移动下一个对象
 		pDataHead = (NetDataHeader_t *)((char *)pDataHead+nRecObjectSize);
 	}
 
@@ -70,10 +73,12 @@ bool TcpDataSplit(const char *szRecvNetData, int nRecSize)
 	return true;
 }
 
+/* 处理整理好的对象 */
 bool HandleNetPack(NetDataHeader_t *pDataHeader)
 {
+	//处理数据包
 	if(pDataHeader->nDataType == 1) {
-		NetdataPeople_t *pPeople = (NetDataPeople_t *)pDataHeader;
+		NetDataPeople_t *pPeople = (NetDataPeople_t *)pDataHeader;
 		printf("People, Age:%d, Name:%s\n", pPeople->nAge, pPeople->szName);
 	} else if(pDataHeader->nDataType == 2) {
 		NetDataSchool_t *pSchool = (NetDataSchool_t *)pDataHeader;
@@ -85,6 +90,29 @@ bool HandleNetPack(NetDataHeader_t *pDataHeader)
 
 int main(int argc, char *argv[])
 {
-	
+	/* 本子里以两个对象作为接收到的数据 */
+	NetDataPeople_t people;
+	people.dataHeader.nDataSize = sizeof(people) - sizeof(NetDataHeader_t);
+	people.dataHeader.nDataType = 1;
+	people.nAge = 20;
+	sprintf(people.szName, "Jim");
+
+	NetDataSchool_t school;
+	school.dataHeader.nDataSize = sizeof(school) - sizeof(NetDataHeader_t);
+	school.dataHeader.nDataType = 2;
+	sprintf(school.szSchoolName, "清华大学");
+	sprintf(school.szSchoolAddress, "北京市北京路");
+
+	/* 将两个对象数据合并到一个地址里面以便重现粘包 */
+	char szSendData[sizeof(people)+sizeof(school)];
+	memcpy(szSendData, (char *)&people, sizeof(people));
+	memcpy(szSendData+sizeof(people), (char *)&school, sizeof(school));
+
+	TcpDataSplit((char *)szSendData, 3);
+	TcpDataSplit((char *)szSendData+3, 10);
+	TcpDataSplit((char *)szSendData+13, sizeof(szSendData)-13);
+
+	getchar();
+	return 0;
 }
 
